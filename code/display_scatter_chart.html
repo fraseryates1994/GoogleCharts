@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<title>Scatter Chart</title>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    function showGraph() {
+      google.charts.load('current', {
+        'packages': ['corechart']
+      });
+      google.charts.setOnLoadCallback(drawChart);
+      drawChart();
+    }
+
+    function drawChart() {
+      // Get all input data
+      var jsonData;
+      var time = document.getElementById('time').value;
+      time += ":00";
+      var dateTemp = document.getElementById("dates");
+      var date = dateTemp.options[dateTemp.selectedIndex].value; // get date from drop down box
+      var locationTemp = document.getElementById("location");
+      var location = locationTemp.options[locationTemp.selectedIndex].value; // get location from drop down box
+      var url = "create_scatter_chart.php"
+      var params = "location="+location+"&time="+time+"&date="+date;
+      var xhttp = new XMLHttpRequest();
+
+      // Open connection and set request header
+      xhttp.open("POST", url, false);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+
+      // Call function when ready state is changed
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == XMLHttpRequest.DONE && xhttp.status == 200) {
+          jsonData = xhttp.responseText;
+        }
+      }
+      xhttp.send(params);
+
+      //create table from JSON from http request
+      var data = new google.visualization.DataTable(jsonData);
+
+      // Set options for chart
+      var options = {
+        title: "NO2 Readings. Location = " + locationTemp.options[locationTemp.selectedIndex].text + ". Date = " +
+          date + ". Time = " + time + ".",
+        hAxis: {
+          title: 'Year'
+        },
+        vAxis: {
+          title: 'NO2 Reading Value',
+          format: "decimal"
+        },
+        colors: ["#004d00"],
+        width: window.innerWidth,
+        height: window.innerHeight / 2,
+        backgroundColor: "#eeffe6", // Set background colour
+        pointSize: 3,
+        crosshair: {
+          trigger: "both"
+        } // Set crosshair for hover and selection
+      }
+      // Update chart with data and options
+      var chart = new google.visualization.ScatterChart(document.getElementById("chart_div"));
+      chart.draw(data, options);
+    }
+  </script>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+<h1> Scatter Chart </h1>
+<p1> A scatter chart displaying NO2 readings over a 1 year period, at a specific time, in Bristol.</p1>
+<br/>
+  Time :
+  <input type="time" id="time" value="08:00"> Date :
+  <select id="dates">
+    <option value="2014">2014</option>
+    <option value="2015">2015</option>
+    <option value="2016">2016</option>
+    <option value="2017">2017</option>
+  </select> Location :
+  <select id="location">
+    <option value="parson_st_no2">Parson Street</option>
+    <option value="rupert_st_no2">Rupert Street</option>
+    <option value="brislington_no2">Brislington</option>
+    <option value="fishponds_no2">Fishponds</option>
+    <option value="newfoundland_way_no2">Newfoundland Way</option>
+    <option value="wells_rd_no2">Wells Road</option>
+  </select>
+  <input type="submit" onclick="showGraph()">
+  <br/>
+  <div id="chart_div"></div>
+  <br/>
+  <form action="/index.html">
+    <input type="submit" value="back" />
+  </form>
+</body>
+</html>

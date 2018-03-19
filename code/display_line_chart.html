@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<title>Line Chart</title>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    function showGraph() {
+      //script for creating scatter chart
+      google.charts.load("current", {
+        "packages": ["corechart"]
+      });
+      google.charts.setOnLoadCallback(drawChart);
+      drawChart();
+    }
+
+    function drawChart() {
+      // Get all input data
+      var jsonData;
+      var time = document.getElementById("time").value;
+      time += ":00";
+      var date = document.getElementById("date").value;
+      var locationTemp = document.getElementById("location");
+      var location = locationTemp.options[locationTemp.selectedIndex].value; // Get location from drop down box
+      var url = "create_line_chart.php"
+      var params = "location=" + location + "&time=" + time + "&date=" + date;
+      var xhttp = new XMLHttpRequest(); // Create xhttp object
+
+      // open connection and set request header
+      xhttp.open("POST", url, false);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+
+      // Call function when ready state is changed
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == XMLHttpRequest.DONE && xhttp.status == 200) {
+          jsonData = xhttp.responseText;
+        }
+      }
+      xhttp.send(params);
+
+      //create table from JSON from http request
+      var data = new google.visualization.DataTable(jsonData);
+
+      // Set options for chart
+      var options = {
+        title: "24hr NO2 Readings. Location = " + locationTemp.options[locationTemp.selectedIndex].text + ". Date = " +
+          date + ". Time = " + time + ".", // Set title
+        hAxis: {
+          title: "Time",
+          gridlines: {
+            count: -1,
+            units: {
+              days: {
+                format: ["dd MMM"]
+              },
+              hours: {
+                format: ["HH:mm"]
+              }
+            }
+          },
+          minorGridlines: {
+            units: {
+              hours: {
+                format: ["hh:mm:ss a"]
+              }
+            }
+          }
+        },
+        vAxis: {
+          title: "NO2 Reading",
+          format: "decimal"
+        },
+        width: window.innerWidth, // Set width in relation to window
+        height: window.innerHeight / 2, // Set height in relation to window
+        backgroundColor: "e6ffff", // Set background colour
+        lineWidth: 2, // Set line width
+        pointSize: 5,
+        crosshair: {
+          trigger: "both"
+        }, // Set crosshair for hover and selection
+        series: {
+          0: {
+            color: "#008080"
+          }, // Colour line
+        }
+      }
+
+      // Update chart with data and options
+      var chart = new google.visualization.LineChart(document.getElementById("chart_div"));
+      chart.draw(data, options);
+    }
+  </script>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+<h1> Line Chart </h1>
+<p1> A line chart displaying NO2 readings over a 24hr period in Bristol.</p1>
+<br/>
+  Time :
+  <input type="time" id="time" value="08:00"> Date :
+
+  <input type="date" id="date" value="2016-07-10"> Location :
+  <select id="location">
+    <option value="parson_st_no2">Parson Street</option>
+    <option value="rupert_st_no2">Rupert Street</option>
+    <option value="brislington_no2">Brislington</option>
+    <option value="fishponds_no2">Fishponds</option>
+    <option value="newfoundland_way_no2">Newfoundland Way</option>
+    <option value="wells_rd_no2">Wells Road</option>
+  </select>
+
+  <input type="submit" onclick="showGraph()"> <br/>
+  <div id="chart_div"></div>
+
+  <br/>
+  <form action="/index.html">
+    <input type="submit" value="back" />
+  </form>
+</body>
+
+</html>
