@@ -1,0 +1,23 @@
+
+- Line Chart - https://developers.google.com/chart/interactive/docs/gallery/linechart
+             - https://developers.google.com/chart/interactive/docs/basic_interactivity
+			 - 
+- JSON - I use JSON to transport date to google charts
+       - JavaScript Object Notation
+	   - Plain text, however written in javascript syntax
+	   - new Date(Year, Month, Day, Hours, Minutes, Seconds, Milliseconds)
+	   - ISO 8601 — 'YYYY-MM-DD'. Hence, after day if optional
+	   - https://stackoverflow.com/questions/10286204/the-right-json-date-format
+- AJAX - asynchronous javaScipt and XML. Used for accessing web servers and web pages.
+       - Misleading name, as applications may also transfer plain text or JAON text
+	   - Can often be used through an xhttp object
+	   - https://www.w3schools.com/xml/ajax_intro.asp
+- DoM - https://docs.oracle.com/javase/tutorial/jaxp/stax/why.html
+      - https://stackoverflow.com/questions/1835177/how-to-use-xmlreader-in-php
+- Extensions from graphs - user input from both, through creating an xhttp opbject
+                         - options https://developers.google.com/chart/interactive/docs/customizing_charts
+						 - Images of charts
+						 - Try and get star for largest value
+						
+	   
+	  

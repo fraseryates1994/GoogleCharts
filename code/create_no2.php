@@ -3,13 +3,15 @@
 /*
   - Fraser Yates
   - Normalise 6 xml files to 6 no2 xmls files
+  - Influenced from https://stackoverflow.com/questions/1835177/how-to-use-xmlreader-in-php
 */
 
+// Variables
 $inputFiles = array("brislington.xml", "fishponds.xml", "parson_st.xml", "rupert_st.xml", "wells_rd.xml", "newfoundland_way.xml");
 $outputFiles = array("brislington_no2.xml", "fishponds_no2.xml", "parson_st_no2.xml", "rupert_st_no2.xml", "wells_rd_no2.xml", "newfoundland_way_no2.xml");
 $reader = new XMLReader;
 $writer = new XMLWriter;
-$doc = new DOMDocument; // Needed if using simplexml_import_dom
+$doc = new DOMDocument;
 $count = 0; // Create count to get first row for location
 $desc = "";
 $lat = "";
@@ -28,6 +30,7 @@ for($i = 0; $i < sizeof($inputFiles); $i++){
     echo "An output file already exists!";
     exit(0);
   }
+  // Open input file and set path for output file
   $reader->open("../csv and xml/".$inputFiles[$i]);
   $writer->openURI("../csv and xml/".$outputFiles[$i]);
 

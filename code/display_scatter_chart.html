@@ -1,11 +1,20 @@
 <!DOCTYPE html>
+<!--
+   - Fraser Yates
+   - Get user input and get JSON format from php and display a Google Charts scatter chart
+   - AJAX - Asynchronous Javascript and html - https://www.w3schools.com/xml/ajax_intro.asp
+   - Other influences - https://developers.google.com/chart/interactive/docs/php_example
+-->
+
 <html>
 <title>Scatter Chart</title>
+
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script type="text/javascript">
+
     function showGraph() {
       google.charts.load('current', {
         'packages': ['corechart']
@@ -34,7 +43,7 @@
       // Call function when ready state is changed
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == XMLHttpRequest.DONE && xhttp.status == 200) {
-          jsonData = xhttp.responseText;
+          jsonData = xhttp.responseText; // Get JSON data from php
         }
       }
       xhttp.send(params);
@@ -53,14 +62,14 @@
           title: 'NO2 Reading Value',
           format: "decimal"
         },
-        colors: ["#004d00"],
-        width: window.innerWidth,
+        colors: ["#004d00"], // Set point colour
+        width: window.innerWidth, // Set height and width in relation to window size
         height: window.innerHeight / 2,
         backgroundColor: "#eeffe6", // Set background colour
         pointSize: 3,
-        crosshair: {
+        crosshair: { // Set crosshair for hover and selection
           trigger: "both"
-        } // Set crosshair for hover and selection
+        }
       }
       // Update chart with data and options
       var chart = new google.visualization.ScatterChart(document.getElementById("chart_div"));
