@@ -3,14 +3,13 @@
 /*
   - Fraser Yates
   - Get user input from display_line_chart.html and create a json table for google charts to process
-  - Uses a DOM based parser
-  - Influenced from -
+  - Use xpath to return an array of the requested input time and date - https://developer.mozilla.org/en-US/docs/Web/XPath/Functions/translate
 */
 
 // create json format
-$rows = array();
-$table = array();
-$table["cols"] = array(
+$jsonRow = array();
+$jsonTable = array();
+$jsonTable["cols"] = array(
   array("label" => "date/time", "type" => "date"),
   array("label" => "NO2", "type" => "number")
 );
@@ -43,27 +42,30 @@ $dateFormat = "d/m/Y H:i:s";
 foreach ($array as $single) {
   $reading = simplexml_load_string($single->asXML());
   $date = DateTime::createFromFormat($dateFormat, ($reading->attributes()->date . " " . $reading->attributes()->time));
-  $val = $reading->attributes()->val;
+  $no2 = $reading->attributes()->val;
 
-  # create JSON for date
+  # create date json
   $temp = array();
-  $googleChartsJSONDate = "Date(";
-  $googleChartsJSONDate .= date("Y", $date->format("U")) . ", ";
-  $googleChartsJSONDate .= (date("m", $date->format("U")) - 1) . ", ";
-  $googleChartsJSONDate .= date("d", $date->format("U")) . ", ";
-  $googleChartsJSONDate .= date("H", $date->format("U")) . ", ";
-  $googleChartsJSONDate .= date("i", $date->format("U")) . ", ";
-  $googleChartsJSONDate .= date("s", $date->format("U")) . ")";
+  $jsonDate = "Date(";
+  $year = date("Y", $date->format("U")) . ", ";
+  $month = (date("m", $date->format("U")) - 1) . ", ";
+  $day = date("d", $date->format("U")) . ", ";
+  $hour = date("H", $date->format("U")) . ", ";
+  $minute = date("i", $date->format("U")) . ", ";
+  $second = date("s", $date->format("U")) . ")";
 
-  $temp[] = array("v" => $googleChartsJSONDate); //add val
-  $temp[] = array("v" => (int) $val); //add val
-  $rows[] = array("c" => $temp); //add row to new column
+  // Concat
+  $jsonDate .= $year.$month.$day.$hour.$minute.$second;
+
+  $temp[] = array("v" => $jsonDate);
+  $temp[] = array("v" => (int) $no2);
+  $jsonRow[] = array("c" => $temp); //add row to new column
 }
-$table["rows"] = $rows;
-$tableJSON = json_encode($table);
+$jsonTable["rows"] = $jsonRow;
+$jsonTableEncode = json_encode($jsonTable);
 
 //echo JSON for google charts
-echo $tableJSON;
+echo $jsonTableEncode;
 
 /*
  - Name: cmpDate

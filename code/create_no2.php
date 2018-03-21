@@ -3,6 +3,7 @@
 /*
   - Fraser Yates
   - Normalise 6 xml files to 6 no2 xmls files
+  - Uses a DOM based parser
   - Influenced from https://stackoverflow.com/questions/1835177/how-to-use-xmlreader-in-php
 */
 
