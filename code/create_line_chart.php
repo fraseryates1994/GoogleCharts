@@ -76,8 +76,6 @@ $jsonTableEncode = json_encode($jsonTable);
 //echo JSON for google charts
 echo $jsonTableEncode;
 
-
-
 /*
 - Name: cmpDate
 - Parameters: $a and $b, adjacent xml entires
