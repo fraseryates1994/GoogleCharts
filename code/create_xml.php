@@ -19,48 +19,109 @@ if(file_exists("../csv and xml/".$outputFileNames[0])) {
   exit(0);
 }
 
-for ($i = 0; $i < sizeof($outputFileNames); $i++) { # Loop 6 times for each output file
-  if (($handle = fopen($csvInputPath, "r")) !== FALSE) {
 
-    # define the tags - last col value in csv file is derived so ignore
-    $header = array('id', 'desc', 'date', 'time', 'nox', 'no', 'no2', 'lat', 'long');
+if (($handle = fopen($csvInputPath, "r")) !== FALSE) {
 
-    # throw away the first line - field names
-    fgetcsv($handle, 200, ",");
+  # define the tags - last col value in csv file is derived so ignore
+  $header = array('id', 'desc', 'date', 'time', 'nox', 'no', 'no2', 'lat', 'long');
 
-    # count the number of items in the $header array so we can loop using it
-    $cols = count($header);
+  # throw away the first line - field names
+  fgetcsv($handle, 200, ",");
 
-    #set record count to 1
-    $count = 1;
-    # set row count to 2 - this is the row in the original csv file
-    $row = 2;
+  # count the number of items in the $header array so we can loop using it
+  $cols = count($header);
 
-    # start ##################################################
-    $out = '<records>';
+  #set record count to 1
+  $count = 1;
+  # set row count to 2 - this is the row in the original csv file
+  $row = 2;
 
-    while (($data = fgetcsv($handle, 200, ",")) !== FALSE) {
+  # start ##################################################
+  $outBris = '<records>';
+  $outFish = '<records>';
+  $outPars = '<records>';
+  $outRup = '<records>';
+  $outWells = '<records>';
+  $outNewF = '<records>';
 
-      if ($data[0] == $locationId[$i]) { // Check the location id
-        $rec = '<row count="' . $count . '" id="' . $row . '">';
+  while (($data = fgetcsv($handle, 200, ",")) !== FALSE) {
 
-        for ($c=0; $c < $cols; $c++) {
-          $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
-        }
-        $rec .= '</row>';
-        $count++;
-        $out .= $rec;
+    if ($data[0] == $locationId[0]) { // Check the location id
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
       }
-      $row++;
+      $rec .= '</row>';
+      $count++;
+      $outBris .= $rec;
+    } else if ($data[0] == $locationId[1]) {
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
+      }
+      $rec .= '</row>';
+      $count++;
+      $outFish .= $rec;
+    } else if ($data[0] == $locationId[2]) {
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
+      }
+      $rec .= '</row>';
+      $count++;
+      $outPars .= $rec;
+    } else if ($data[0] == $locationId[3]) {
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
+      }
+      $rec .= '</row>';
+      $count++;
+      $outRup .= $rec;
+    } else if ($data[0] == $locationId[4]) {
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
+      }
+      $rec .= '</row>';
+      $count++;
+      $outWells .= $rec;
+    } else if ($data[0] == $locationId[5]) {
+      $rec = '<row count="' . $count . '" id="' . $row . '">';
+
+      for ($c=0; $c < $cols; $c++) {
+        $rec .= '<' . trim($header[$c]) . ' val="' . trim($data[$c]) . '"/>';
+      }
+      $rec .= '</row>';
+      $count++;
+      $outNewF .= $rec;
     }
-
-    $out .= '</records>';
-    # finish ##################################################
-
-    # write out file
-    file_put_contents("../csv and xml/air_quality.csv".$outputFileNames[$i], $out);
+    $row++;
   }
-  fclose($handle);
+
+  $outBris .= '</records>';
+  $outFish .= '</records>';
+  $outPars .= '</records>';
+  $outRup .= '</records>';
+  $outWells .= '</records>';
+  $outNewF .= '</records>';
+  # finish ##################################################
+
+  # write out file
+  file_put_contents("../csv and xml/".$outputFileNames[0], $outBris);
+  file_put_contents("../csv and xml/".$outputFileNames[1], $outFish);
+  file_put_contents("../csv and xml/".$outputFileNames[2], $outPars);
+  file_put_contents("../csv and xml/".$outputFileNames[3], $outRup);
+  file_put_contents("../csv and xml/".$outputFileNames[4], $outWells);
+  file_put_contents("../csv and xml/".$outputFileNames[5], $outNewF);
+
 }
+fclose($handle);
+
 echo "....all done!";
 ?>

@@ -1,18 +1,10 @@
 <?php
 
 /*
-  - Fraser Yates
-  - Get user input from display_line_chart.html and create a json table for google charts to process
-  - Use xpath to return an array of the requested input time and date - https://developer.mozilla.org/en-US/docs/Web/XPath/Functions/translate
+- Fraser Yates
+- Get user input from display_line_chart.html and create a json table for google charts to process
+- Use xpath to return an array of the requested input time and date - https://developer.mozilla.org/en-US/docs/Web/XPath/Functions/translate
 */
-
-// create json format
-$jsonRow = array();
-$jsonTable = array();
-$jsonTable["cols"] = array(
-  array("label" => "date/time", "type" => "date"),
-  array("label" => "NO2", "type" => "number")
-);
 
 // get location from http request and open file
 $inputFileName = "../csv and xml/".$_REQUEST["location"].".xml";
@@ -38,27 +30,44 @@ $array = $xml->xpath("//reading[(@date='$firstDate' and translate(@time, ':', ''
 // Sort the array using cmpDate method - https://www.w3schools.com/php/func_array_usort.asp
 usort($array, "cmpDate");
 
-$dateFormat = "d/m/Y H:i:s";
+// create json format
+$jsonRow = array();
+$jsonTable = array();
+$jsonTable["cols"] = array(
+  array("label" => "date/time", "type" => "date"),
+  array("label" => "NO2", "type" => "number"),
+  array("role" => "style", "type" => "string")
+);
+
 foreach ($array as $single) {
   $reading = simplexml_load_string($single->asXML());
-  $date = DateTime::createFromFormat($dateFormat, ($reading->attributes()->date . " " . $reading->attributes()->time));
-  $no2 = $reading->attributes()->val;
 
-  # create date json
+  // Create dateTime from xml
+  $date = $reading->attributes()->date;
+  $time = $reading->attributes()->time;
+  $dateTime = $date . " " . $time;
+  $dateAndTime= DateTime::createFromFormat("d/m/Y H:i:s", ($dateTime));
+
+  # Convert dateAndTime to JSON format
   $temp = array();
   $jsonDate = "Date(";
-  $year = date("Y", $date->format("U")) . ", ";
-  $month = (date("m", $date->format("U")) - 1) . ", ";
-  $day = date("d", $date->format("U")) . ", ";
-  $hour = date("H", $date->format("U")) . ", ";
-  $minute = date("i", $date->format("U")) . ", ";
-  $second = date("s", $date->format("U")) . ")";
+  $year = date("Y", $dateAndTime->format("U")) . ", ";
+  $month = (date("m", $dateAndTime->format("U")) -1)  . ", "; // Remove 1 month because Google charts reads 0-11 not 1-12
+  $day = date("d", $dateAndTime->format("U")) . ", ";
+  $hour = date("H", $dateAndTime->format("U")) . ", ";
+  $minute = date("i", $dateAndTime->format("U")) . ", ";
+  $second = date("s", $dateAndTime->format("U")) . ")";
 
-  // Concat
-  $jsonDate .= $year.$month.$day.$hour.$minute.$second;
+  $jsonDate .= $year.$month.$day.$hour.$minute.$second; // concat String
+
+  // Get no2 value
+  $no2 = (int) $reading->attributes()->val;
+
+  $colour = getColour($no2);
 
   $temp[] = array("v" => $jsonDate);
-  $temp[] = array("v" => (int) $no2);
+  $temp[] = array("v" => $no2);
+  $temp[] = array("v" => $colour);
   $jsonRow[] = array("c" => $temp); //add row to new column
 }
 $jsonTable["rows"] = $jsonRow;
@@ -67,21 +76,32 @@ $jsonTableEncode = json_encode($jsonTable);
 //echo JSON for google charts
 echo $jsonTableEncode;
 
+
+
 /*
- - Name: cmpDate
- - Parameters: $a and $b, adjacent xml entires
- - Returns: 0 if dates are equal
-            -1 if first date is smaller than second
-            1 if first date is larger than second
-  - Comments: Creates a DOM tree objet to access date and compares them
+- Name: cmpDate
+- Parameters: $a and $b, adjacent xml entires
+- Returns: 0 if dates are equal
+-1 if first date is smaller than second
+1 if first date is larger than second
+- Comments: Creates a DOM tree objet to access date and compares them
 */
 function cmpDate($a, $b) {
   $aXml = simplexml_load_string($a->asXML());
   $bXml = simplexml_load_string($b->asXML());
 
-  $dateFormat = "d/m/Y H:i:s";
-  $date1 = DateTime::createFromFormat($dateFormat, ($aXml->attributes()->date . " " . $aXml->attributes()->time));
-  $date2 = DateTime::createFromFormat($dateFormat, ($bXml->attributes()->date . " " . $bXml->attributes()->time));
+  // Get datetime from aXML
+  $aDate = $aXml->attributes()->date;
+  $aTime = $aXml->attributes()->time;
+  $aDateTime = $aDate . " " . $aTime;
+
+  // get datetime from bxml
+  $bDate = $bXml->attributes()->date;
+  $bTime = $bXml->attributes()->time;
+  $bDateTime = $bDate . " " . $bTime;
+
+  $date1 = DateTime::createFromFormat("d/m/Y H:i:s", $aDateTime);
+  $date2 = DateTime::createFromFormat("d/m/Y H:i:s", $bDateTime);
 
   if ($date1 == $date2) {
     return 0;
@@ -90,5 +110,56 @@ function cmpDate($a, $b) {
   } else {
     return 1;
   }
+}
+
+function getColour($no2) {
+  if (isLow($no2) == true) {
+    if ($no2 < 68) {
+      return "#66ff99";
+    } else if ($no2 < 135) {
+      return "#00ff00";
+    } else {
+      return "#00cc00";
+    }
+  } else if (isModerate($no2) == true) {
+    if ($no2 < 268) {
+      return "#ffff00";
+    } else if ($no2 < 335) {
+      return "#ffcc00";
+    } else {
+      return "#ff9900";
+    }
+  } else if (isHigh($no2) == true) {
+    if ($no2 < 468) {
+      return "#ff5050";
+    } else if ($no2 < 535) {
+      return "#ff0000";
+    } else {
+      return "#cc0000";
+    }
+  } else {
+    return "#cc00ff";
+  }
+}
+
+function isLow($no2) {
+  if ($no2 >= -100 && $no2 <= 200) { // -100 because csv may contain - values
+    return true;
+  }
+  return false;
+}
+
+function isModerate($no2) {
+  if ($no2 >= 201 && $no2 <= 400) {
+    return true;
+  }
+  return false;
+}
+
+function isHigh($no2) {
+  if ($no2 >= 401 && $no2 <= 600) {
+    return true;
+  }
+  return false;
 }
 ?>
