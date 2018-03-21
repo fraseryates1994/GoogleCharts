@@ -65,6 +65,12 @@ $jsonTableEncode = json_encode($jsonTable);
 //echo out google charts
 echo $jsonTableEncode;
 
+/*
+- Name: getColour
+- Parameters: $no2
+- Returns: hex colour string
+- Comments: takes in no2 value and return the colour based on https://uk-air.defra.gov.uk/air-pollution/daqi
+*/
 function getColour($no2) {
   if (isLow($no2) == true) {
     if ($no2 < 68) {
@@ -95,6 +101,12 @@ function getColour($no2) {
   }
 }
 
+/*
+- Name: isLow
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in low range
+*/
 function isLow($no2) {
   if ($no2 >= -100 && $no2 <= 200) { // - because csv may contain - values
     return true;
@@ -102,6 +114,12 @@ function isLow($no2) {
   return false;
 }
 
+/*
+- Name: isModerate
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in moderate range
+*/
 function isModerate($no2) {
   if ($no2 >= 201 && $no2 <= 400) {
     return true;
@@ -109,13 +127,17 @@ function isModerate($no2) {
   return false;
 }
 
+/*
+- Name: isHigh
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in high range
+*/
 function isHigh($no2) {
   if ($no2 >= 401 && $no2 <= 600) {
     return true;
   }
   return false;
 }
-
-
 
 ?>

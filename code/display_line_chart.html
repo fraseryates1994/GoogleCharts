@@ -54,7 +54,7 @@
       var options = {
         title: "24hr NO2 Readings. Location = " + locationTemp.options[locationTemp.selectedIndex].text + ". Date = " +
           date + ". Time = " + time + ".", // Set title
-        hAxis: {
+        hAxis: { // Set axis to show hours and minutes
           title: "Time",
           gridlines: {
             count: -1,
@@ -83,14 +83,14 @@
         height: window.innerHeight / 2, // Set height in relation to window
         backgroundColor: "e6ffff", // Set background colour
         lineWidth: 2, // Set line width
-        pointSize: 5,
-        crosshair: {
+        pointSize: 5, // Set point size so coours show
+        crosshair: { // Set crosshair for hover and selection
           trigger: "both"
-        }, // Set crosshair for hover and selection
-        series: {
+        }, 
+        series: { // Colour line
           0: {
             color: "#008080"
-          }, // Colour line
+          },
         }
       }
 

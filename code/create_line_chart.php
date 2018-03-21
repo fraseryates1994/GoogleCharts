@@ -40,6 +40,7 @@ $jsonTable["cols"] = array(
 );
 
 foreach ($array as $single) {
+  // Open Tree
   $reading = simplexml_load_string($single->asXML());
 
   // Create dateTime from xml
@@ -80,8 +81,8 @@ echo $jsonTableEncode;
 - Name: cmpDate
 - Parameters: $a and $b, adjacent xml entires
 - Returns: 0 if dates are equal
--1 if first date is smaller than second
-1 if first date is larger than second
+          -1 if first date is smaller than second
+           1 if first date is larger than second
 - Comments: Creates a DOM tree objet to access date and compares them
 */
 function cmpDate($a, $b) {
@@ -110,6 +111,12 @@ function cmpDate($a, $b) {
   }
 }
 
+/*
+- Name: getColour
+- Parameters: $no2
+- Returns: hex colour string
+- Comments: takes in no2 value and return the colour based on https://uk-air.defra.gov.uk/air-pollution/daqi
+*/
 function getColour($no2) {
   if (isLow($no2) == true) {
     if ($no2 < 68) {
@@ -140,6 +147,12 @@ function getColour($no2) {
   }
 }
 
+/*
+- Name: isLow
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in low range
+*/
 function isLow($no2) {
   if ($no2 >= -100 && $no2 <= 200) { // -100 because csv may contain - values
     return true;
@@ -147,6 +160,12 @@ function isLow($no2) {
   return false;
 }
 
+/*
+- Name: isModerate
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in moderate range
+*/
 function isModerate($no2) {
   if ($no2 >= 201 && $no2 <= 400) {
     return true;
@@ -154,6 +173,12 @@ function isModerate($no2) {
   return false;
 }
 
+/*
+- Name: isHigh
+- Parameters: $no2
+- Returns: boolean
+- Comments: takes in no2 value and return true if in high range
+*/
 function isHigh($no2) {
   if ($no2 >= 401 && $no2 <= 600) {
     return true;

@@ -1,4 +1,9 @@
 <?php
+/*
+   - Fraser Yates
+   - Convert csv to XML
+*/
+
 echo "working .. wait<br/>";
 ob_flush();
 flush();
