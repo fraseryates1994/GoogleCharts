@@ -40,7 +40,7 @@ One disadvantage of using stream oriented parsers is you can only view one infos
 
 ## Graphs
 Visualisation of the graph can be found in the uwe cems server [here](http://www.cems.uwe.ac.uk/~f2-yates/WebDev/code/index.html "index .html"). The users journey is illustrated below through a state diagram:
-![](https://ibb.co/eo6SkH)
+![](https://github.com/fraseryates1994/GoogleCharts/blob/master/images/user%20state%20diagram.png)
 - Both charts utilise xpath to return an array containing XML which corresponds to user input. ([XPATH](https://www.w3schools.com/xml/xpath_intro.asp "to xpath"))
 - Both charts utilise AJAX through creating an xhttp object to send http requests to and from the front and back end. ([AJAX](https://www.w3schools.com/xml/ajax_intro.asp "ajax intro")). JSON data can be retrieved from the php through an xhttp object:
 ```javascript
@@ -82,11 +82,13 @@ $brislingtonPercentage = ($brislingtonNo2 / $totalNo2) * 100;
 ```
 
 ### Scatter Chart
-![](https://ibb.co/hzhdsx)
+Scatter visualisation image:
+![](https://github.com/fraseryates1994/GoogleCharts/blob/master/images/scatter%20chart.png)
 - PHP source code can be found [here](https://github.com/fraseryates1994/GoogleCharts/blob/master/code/create_scatter_chart.php "to create_scatter_chart") and the HTML/ Javascript can be found [here](https://github.com/fraseryates1994/GoogleCharts/blob/master/code/display_scatter_chart.html "to display_scatter_chart").
 
 ### Line Chart
-![](https://ibb.co/iQ7pzc)
+Line visualisation image:
+![](https://github.com/fraseryates1994/GoogleCharts/blob/master/images/line%20chart.png)
 - PHP source code can be found [here](https://github.com/fraseryates1994/GoogleCharts/blob/master/code/create_line_chart.php "to create_line_chart") and the HTML/ Javascript can be found [here](https://github.com/fraseryates1994/GoogleCharts/blob/master/code/display_scatter_chart.html "to display_line_chart")
 
 ## References
